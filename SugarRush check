@@ -1,0 +1,102 @@
+public class SugarRush : MonoBehaviour {
+
+    [SerializeField]
+    private Player PlayerCtrl;
+   public bool Sugar = false;
+    bool Crash = false;
+    public bool StartTimer = false;
+    public bool StartCrashTimer = false;
+    // timer for power up
+    private float Timer = 0;
+    private float CrashTimer = 0;
+    public float TimeLimit = 10f;
+
+    // Use this for initialization
+    void Start () {
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+      updateTimer();
+
+
+        if (StartTimer == true)
+        {
+            if (Timer == 0)
+            {
+                //start the power up
+                SugRush();
+            }
+        }
+
+        if (StartCrashTimer == true)
+        { 
+            if (Timer >= TimeLimit)
+            {
+                SugCrash();
+            }
+        }
+    }
+    void updateTimer()
+    {
+        //Accumulate time elapsed
+        Timer += Time.deltaTime;
+
+        //Reached our time limit
+        if (Timer >= TimeLimit)
+        {
+            //end the power up & start the negative effect
+            Timer = 0;
+            Sugar = false;
+            StartCrashTimer = true;
+            Crash = true;
+
+            //powerup stopped
+            Debug.Log("sugar crash!");
+        }
+       
+    }
+    void CrashUpdateTimer()
+    {
+        //Accumulate time elapsed
+        CrashTimer += Time.deltaTime;
+        if (StartCrashTimer == true)
+        {
+            //Reached our time limit
+            if (CrashTimer >= TimeLimit)
+            {
+                //end the power up & start the negative effect
+                CrashTimer = 0;
+
+                Crash = false;
+
+
+                //powerup stopped
+                Debug.Log("sugar crash!");
+            }
+        }
+    }
+    void SugRush()
+    {
+        if (Sugar == true)
+        {
+            StartTimer = true;
+            PlayerCtrl.MoveSpeed *= 2.0f;
+        }
+    }
+    void SugCrash()
+    {
+        if (Crash == true)
+        {
+            PlayerCtrl.MoveSpeed /= 4.0f;
+        }
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+          //  Destroy(gameObject);
+        }
+    }
+}
